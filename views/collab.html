@@ -1,0 +1,63 @@
+<html lang="EN">
+<head>
+    <title><%= title %></title>
+    <link rel='manifest' href='/manifest.json'>
+    <link rel="icon" href="/images/raccoon-logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+          crossorigin="anonymous"
+    >
+    <script src="/javascripts/socket.io.js"></script>
+    <script src="/javascripts/collab/led.js?<%= ver %>"></script>
+    <script src="/javascripts/collab/logger.js?<%= ver %>"></script>
+    <script src="/javascripts/collab/collab.js?<%= ver %>"></script>
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <meta name="theme-color" content="#444" />
+    <link rel="stylesheet" href="/stylesheets/style.css?<%= ver %>">
+    <link rel="stylesheet" href="/stylesheets/collab.css?<%= ver %>">
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <form id="collab-form"></form>
+        </div>
+        <div class="col-md-7">
+            <div class="window">
+                <div class="window-top">
+                    <figure class="icon">
+                        <svg width="25px" height="25px">
+                            <circle id="led" cx="15" cy="15" r="10" stroke="#FFF" stroke-width="4" fill="black" />
+                        </svg><span class="log-title">Logs</span>
+                    </figure>
+                </div>
+                <div id="console" class="log window-bottom"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const element = {
+                form    : document.getElementById("collab-form"),
+                led     : document.getElementById("led"),
+                log     : document.getElementById("prawy"),
+                console : document.getElementById("console")
+            },
+            logConfig = {
+                max: 20,
+                showNotice: false
+            };
+        new Collab(
+            '/collab',
+            element.form,
+            new Led(element.led),
+            new Logger(element.console, logConfig)
+        );
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+let fs = require('fs');
+let app = require('../app');
+let debug = require('debug')('cf:server');
+let http = require('http');
+let https = require('https');
+let key  = fs.readFileSync('sslcert/localhost.key', 'utf8');
+let cert = fs.readFileSync('sslcert/localhost.cert', 'utf8');
+
+let port = {
+      http: normalizePort(process.env.PORT_HTTP || '80'),
+      https: normalizePort(process.env.PORT_HTTPS || '443')
+};
+
+/**
+ * Get port from environment and store in Express.
+ */
+app.set('port', port.https);
+
+/**
+ * Create HTTP server for redirect to HTTPS only
+ * @type {Server}
+ */
+let httpServer = http.createServer((req, res) => {
+  debug((new Date().toISOString()) + ' HTTP requested, redirecting to HTTPS');
+  res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+  res.end();
+});
+
+httpServer.listen(port.http, () => {
+  debug((new Date().toISOString()) + ' httpServer is listening on port ' + port.http);
+});
+
+/**
+ * Create HTTPS server
+ * @type {Server}
+ */
+let httpsServer = https.createServer({key, cert}, app);
+httpsServer.listen(port.https, () => {
+  debug((new Date().toISOString()) + ' httpsServer is listening on port ' + port.https);
+});
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+httpsServer.on('error', onError);
+httpsServer.on('listening', () => {
+  let addr = httpsServer.address();
+  let bind = typeof addr === 'string'
+      ? 'pipe ' + addr
+      : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+});
+
+/**
+ * Listen for socket.io communication
+ */
+require('../socket.io/collab.io')(
+    require('socket.io')(httpsServer).of('/collab')
+);
+
+/**
+ * Normalize a port into a number, string, or false.
+ * @param val
+ * @returns {number|string|boolean}
+ */
+function normalizePort(val) {
+  let port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTPS server "error" event.
+ * @param error {SystemError}
+ * @throws {SystemError}
+ */
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
