@@ -1,4 +1,4 @@
-let
+const
     router = require('express').Router(),
     indexController = require('../controllers/index');
 

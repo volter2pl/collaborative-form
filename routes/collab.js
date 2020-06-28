@@ -1,4 +1,4 @@
-let
+const
     router = require('express').Router(),
     collabController = require('../controllers/collab');
 

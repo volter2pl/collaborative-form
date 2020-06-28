@@ -3,18 +3,18 @@
 /**
  * Module dependencies.
  */
-let fs = require('fs');
-let app = require('../app');
-let debug = require('debug')('cf:server');
-let http = require('http');
-let https = require('https');
-let key  = fs.readFileSync('sslcert/localhost.key', 'utf8');
-let cert = fs.readFileSync('sslcert/localhost.cert', 'utf8');
-
-let port = {
+const
+    fs = require('fs'),
+    app = require('../app'),
+    debug = require('debug')('cf:server'),
+    http = require('http'),
+    https = require('https'),
+    key  = fs.readFileSync('sslcert/localhost.key', 'utf8'),
+    cert = fs.readFileSync('sslcert/localhost.cert', 'utf8'),
+    port = {
       http: normalizePort(process.env.PORT_HTTP || '80'),
       https: normalizePort(process.env.PORT_HTTPS || '443')
-};
+    };
 
 /**
  * Get port from environment and store in Express.
@@ -25,7 +25,7 @@ app.set('port', port.https);
  * Create HTTP server for redirect to HTTPS only
  * @type {Server}
  */
-let httpServer = http.createServer((req, res) => {
+const httpServer = http.createServer((req, res) => {
   debug((new Date().toISOString()) + ' HTTP requested, redirecting to HTTPS');
   res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
   res.end();
@@ -39,7 +39,7 @@ httpServer.listen(port.http, () => {
  * Create HTTPS server
  * @type {Server}
  */
-let httpsServer = https.createServer({key, cert}, app);
+const httpsServer = https.createServer({key, cert}, app);
 httpsServer.listen(port.https, () => {
   debug((new Date().toISOString()) + ' httpsServer is listening on port ' + port.https);
 });

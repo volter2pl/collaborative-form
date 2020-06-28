@@ -1,11 +1,11 @@
 module.exports = io => {
 
-    let debug = require('debug')('cf:io');
+    const debug = require('debug')('cf:io');
 
     io.on('connection', socket => {
 
         const ACTION = 'form';
-        let Form = require('../models/form/form');
+        const Form = require('../models/form/form');
 
         /* new user, sending current server state */
         debug((new Date()) + ' New IO user, sending current state', socket.id);

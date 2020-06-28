@@ -49,10 +49,7 @@ class Collab {
     __send(id) {
         this.led.black();
         this.log.add("__send");
-        this.socket.emit(
-            this.tasks[id].path,
-            this.tasks[id].element
-        );
+        this.socket.emit('form', this.tasks[id]);
     }
 
     /**
@@ -81,11 +78,7 @@ class Collab {
      */
     __changeHandler(input) {
         this.log.add("__changeHandler");
-        this.tasks[input.id] = {
-            path: 'form',
-            element: this.__serialize(input.id),
-            oldElement: this.formData[input.id]
-        };
+        this.tasks[input.id] = this.__serialize(input.id);
         this.__send(input.id)
     }
 
@@ -160,7 +153,7 @@ class Collab {
         for (let task in this.tasks) {
             if (!this.tasks.hasOwnProperty(task)) continue;
 
-            let old = this.tasks[task].oldElement;
+            const old = this.formData[task];
             if (
                 (old.type === "text" && old.value !== newFormData[old.id].value) ||
                 (old.type === "checkbox" && old.checked !== newFormData[old.id].checked)

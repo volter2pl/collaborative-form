@@ -1,4 +1,4 @@
-let CommonModel = require('../models/common');
+const CommonModel = require('../models/common');
 
 exports.index = function(req, res) {
     res.render('index', {
