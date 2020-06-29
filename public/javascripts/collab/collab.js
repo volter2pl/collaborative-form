@@ -179,7 +179,7 @@ class Collab {
 
             let old = this.tasks[task].oldElement;
             if (
-                (old.type === "radio" && this.__getRadioValueByName(old.name) !== newFormData[old.id].checked) ||
+                (old.type === "radio" && this.__getRadioValueByName(old.name) !== old.id) ||
                 (old.kind === "value" && old.value !== newFormData[old.id].value) ||
                 (old.kind === "checkbox" && old.checked !== newFormData[old.id].checked)
             ) {
