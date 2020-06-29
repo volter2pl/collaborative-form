@@ -72,6 +72,23 @@ class Collab {
     }
 
     /**
+     * Get radio input value by name
+     * @param name
+     * @returns {string}
+     * @private
+     */
+    __getCheckedRadioId(name) {
+        for (let element in this.formData) {
+            if (!this.formData.hasOwnProperty(element)) continue;
+            if (this.formData[element].kind !== "radio") continue;
+            if (this.formData[element].name !== name) continue;
+            if (this.formData[element].checked) {
+                return this.formData[element].id;
+            }
+        }
+    }
+
+    /**
      * Handle input change - create and send task
      * @param input {HTMLInputElement}
      * @private
@@ -155,8 +172,9 @@ class Collab {
 
             const old = this.formData[task];
             if (
-                (old.type === "text" && old.value !== newFormData[old.id].value) ||
-                (old.type === "checkbox" && old.checked !== newFormData[old.id].checked)
+                (old.type === "radio" && this.__getCheckedRadioId(old.name) !== old.id) ||
+                (old.kind === "value" && old.value !== newFormData[old.id].value) ||
+                (old.kind === "checkbox" && old.checked !== newFormData[old.id].checked)
             ) {
                 this.log.add(task + " -----> conflicted!");
             } else {
