@@ -80,7 +80,7 @@ class Collab {
      * @returns {string}
      * @private
      */
-    __getRadioValueByName(name) {
+    __getCheckedRadioId(name) {
         for (let element in this.formData) {
             if (!this.formData.hasOwnProperty(element)) continue;
             if (this.formData[element].kind !== "radio") continue;
@@ -179,7 +179,7 @@ class Collab {
 
             let old = this.tasks[task].oldElement;
             if (
-                (old.type === "radio" && this.__getRadioValueByName(old.name) !== old.id) ||
+                (old.type === "radio" && this.__getCheckedRadioId(old.name) !== old.id) ||
                 (old.kind === "value" && old.value !== newFormData[old.id].value) ||
                 (old.kind === "checkbox" && old.checked !== newFormData[old.id].checked)
             ) {
