@@ -167,19 +167,19 @@ class Collab {
      * @private
      */
     __resolveConflicts(newFormData) {
-        for (let task in this.tasks) {
-            if (!this.tasks.hasOwnProperty(task)) continue;
+        for (let id in this.tasks) {
+            if (!this.tasks.hasOwnProperty(id)) continue;
 
-            const old = this.formData[task];
+            const old = this.formData[id];
             if (
                 (old.type === "radio" && this.__getCheckedRadioId(old.name) !== old.id) ||
                 (old.kind === "value" && old.value !== newFormData[old.id].value) ||
                 (old.kind === "checkbox" && old.checked !== newFormData[old.id].checked)
             ) {
-                this.log.add(task + " -----> conflicted!");
+                this.log.add(id + " -----> conflicted!");
             } else {
-                this.log.add(task + " -----> resending!");
-                this.__send(task);
+                this.log.add(id + " -----> resending!");
+                this.__send(id);
             }
         }
     }
@@ -192,10 +192,10 @@ class Collab {
     __createForm(dataForm) {
         this.formData = dataForm;
         this.form.innerHTML  = "";
-        for (let element in this.formData) {
-            if (!this.formData.hasOwnProperty(element)) continue;
+        for (let id in this.formData) {
+            if (!this.formData.hasOwnProperty(id)) continue;
             this.form.appendChild(
-                this.__createFormInput(this.formData[element])
+                this.__createFormInput(this.formData[id])
             );
         }
     }
