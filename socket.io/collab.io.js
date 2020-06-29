@@ -5,7 +5,7 @@ module.exports = io => {
     io.on('connection', socket => {
 
         const ACTION = 'form';
-        const Form = require('../models/form/form');
+        let Form = require('../models/form/form');
 
         /* new user, sending current server state */
         debug((new Date()) + ' New IO user, sending current state', socket.id);
@@ -18,16 +18,16 @@ module.exports = io => {
         });
 
         socket.on(ACTION, payload => {
-            Form.updateElement(payload);
+            let newElementState = Form.updateElement(payload);
 
             socket.broadcast.emit(ACTION.concat("-change"), {
                 message: 'someone send request',
-                payload: Form.get(payload.id)
+                payload: newElementState
             });
 
             socket.emit(ACTION.concat("-change-confirm"), {
                 message: 'request received',
-                payload: Form.get(payload.id)
+                payload: newElementState
             });
         });
 
