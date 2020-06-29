@@ -53,11 +53,11 @@ Form.__setChecked = (id, checked) => {
  */
 Form.updateElement = (element) => {
     if (element.kind === "value") {
-        Form.__setValue(element.id, element.value);
+        self.__setValue(element.id, element.value);
     }
 
     if (["checked", "radio"].includes(element.kind)) {
-        Form.__setChecked(element.id, element.checked);
+        self.__setChecked(element.id, element.checked);
     }
 };
 
